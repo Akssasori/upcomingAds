@@ -1,0 +1,13 @@
+server:
+  port: 1234
+
+spring:
+  application:
+    name: upcomingAds
+  output:
+    ansi:
+      enabled: ALWAYS
+
+
+
+
