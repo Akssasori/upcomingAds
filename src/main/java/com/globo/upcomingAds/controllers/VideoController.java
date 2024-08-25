@@ -3,6 +3,8 @@ package com.globo.upcomingAds.controllers;
 //import org.bytedeco.ffmpeg.global.avfilter;
 //import org.bytedeco.ffmpeg.global.avformat;
 //import org.bytedeco.ffmpeg.global.avcodec;
+import com.globo.upcomingAds.services.AudioService;
+import com.globo.upcomingAds.services.VideoService;
 import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.ffmpeg.global.swscale;
 import org.bytedeco.ffmpeg.swscale.SwsFilter;
@@ -17,6 +19,14 @@ import java.io.IOException;
 @RequestMapping("video")
 public class VideoController {
 
+    private final AudioService audioService;
+    private final VideoService videoService;
+
+    public VideoController(AudioService audioService, VideoService videoService) {
+        this.audioService = audioService;
+        this.videoService = videoService;
+    }
+
     @GetMapping("/merge-video-audio")
     public String mergeVideoWithAudio() throws IOException, InterruptedException {
         // Inicializar as bibliotecas do FFmpeg
@@ -28,13 +38,20 @@ public class VideoController {
         String audioTreated = "C:\\hack\\automatizacao\\locucaoOutput.wav";
         String outputPath = "C:\\hack\\automatizacao\\output.mp4";
 
-        removeSilence(audioPath,audioTreated);
+//        removeSilence(audioPath,audioTreated);
+//        mergeVideoAudio(videoPath, audioTreated, outputPath);
 
+        audioService.removeSilence(audioPath,audioTreated);
+        return videoService.mergeVideoAudio(videoPath, audioTreated, outputPath);
+
+    }
+
+    private static String mergeVideoAudio(String videoPath, String audioTreated, String outputPath) {
         try {
             ProcessBuilder pb = new ProcessBuilder(
                     "ffmpeg",
                     "-i", videoPath,
-                    "-i", audioPath,
+                    "-i", audioTreated,
                     "-c:v", "copy",
                     "-c:a", "aac",
                     "-strict", "experimental",
@@ -58,7 +75,7 @@ public class VideoController {
                     "ffmpeg",
                     "-i", audioPath,
                     "-af", "silenceremove=start_periods=1:start_silence=0.5:start_threshold=-50dB:detection=peak,"
-                    + "reverse,silenceremove=start_periods=1:start_silence=0.5:start_threshold=-50dB:detection=peak,reverse",
+                    + "areverse,silenceremove=start_periods=1:start_silence=0.5:start_threshold=-50dB:detection=peak,areverse",
                     audioTreated
             );
 
