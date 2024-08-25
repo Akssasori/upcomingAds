@@ -29,7 +29,7 @@ public class VideoController {
 
     @GetMapping("/merge-video-audio")
     public String mergeVideoWithAudio() throws IOException, InterruptedException {
-        // Inicializar as bibliotecas do FFmpeg
+        // Inicializar as bibliotecas do FFmpeg 6.1.1
         avutil.av_log_set_level(avutil.AV_LOG_ERROR);
         swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(),new DoublePointer());
 
@@ -38,62 +38,9 @@ public class VideoController {
         String audioTreated = "C:\\hack\\automatizacao\\locucaoOutput.wav";
         String outputPath = "C:\\hack\\automatizacao\\output.mp4";
 
-//        removeSilence(audioPath,audioTreated);
-//        mergeVideoAudio(videoPath, audioTreated, outputPath);
-
         audioService.removeSilence(audioPath,audioTreated);
         return videoService.mergeVideoAudio(videoPath, audioTreated, outputPath);
 
-    }
-
-    private static String mergeVideoAudio(String videoPath, String audioTreated, String outputPath) {
-        try {
-            ProcessBuilder pb = new ProcessBuilder(
-                    "ffmpeg",
-                    "-i", videoPath,
-                    "-i", audioTreated,
-                    "-c:v", "copy",
-                    "-c:a", "aac",
-                    "-strict", "experimental",
-                    outputPath
-            );
-
-            Process process = pb.start();
-            process.waitFor();
-
-            return "Vídeo criado com sucesso: " + outputPath;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Erro ao criar vídeo: " + e.getMessage();
-        }
-    }
-
-    private String removeSilence(String audioPath, String audioTreated) throws IOException, InterruptedException {
-
-        try {
-            ProcessBuilder pb = new ProcessBuilder(
-                    "ffmpeg",
-                    "-i", audioPath,
-                    "-af", "silenceremove=start_periods=1:start_silence=0.5:start_threshold=-50dB:detection=peak,"
-                    + "areverse,silenceremove=start_periods=1:start_silence=0.5:start_threshold=-50dB:detection=peak,areverse",
-                    audioTreated
-            );
-
-            Process process = pb.start();
-            process.waitFor();
-
-            if (process.exitValue() == 0) {
-                return "Áudio processado com sucesso: " + audioTreated;
-            } else {
-                return "Erro ao processar áudio.";
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "Erro ao tratar o audio: " + e.getMessage();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return "Erro ao tratar o audio: " + e.getMessage();
-        }
     }
 
 
