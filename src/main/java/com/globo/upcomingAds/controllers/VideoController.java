@@ -28,7 +28,7 @@ public class VideoController {
     }
 
     @GetMapping("/merge-video-audio")
-    public String mergeVideoWithAudio() throws IOException, InterruptedException {
+    public String mergeVideoWithAudio() throws Exception {
         // Inicializar as bibliotecas do FFmpeg 6.1.1
         avutil.av_log_set_level(avutil.AV_LOG_ERROR);
         swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(),new DoublePointer());
@@ -39,6 +39,8 @@ public class VideoController {
         String outputPath = "C:\\hack\\automatizacao\\output.mp4";
 
         audioService.removeSilence(audioPath,audioTreated);
+        boolean isAudioShorterOrEqual = videoService.checkIfAudioFitsVideo(videoPath, audioTreated);
+        System.out.println(isAudioShorterOrEqual);
         return videoService.mergeVideoAudio(videoPath, audioTreated, outputPath);
 
     }
