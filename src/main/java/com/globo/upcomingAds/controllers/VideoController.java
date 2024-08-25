@@ -1,7 +1,7 @@
 package com.globo.upcomingAds.controllers;
 
 //import org.bytedeco.ffmpeg.global.avfilter;
-import org.bytedeco.ffmpeg.global.avformat;
+//import org.bytedeco.ffmpeg.global.avformat;
 //import org.bytedeco.ffmpeg.global.avcodec;
 import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.ffmpeg.global.swscale;
@@ -21,9 +21,9 @@ public class VideoController {
         avutil.av_log_set_level(avutil.AV_LOG_ERROR);
         swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(),new DoublePointer());
 
-        String videoPath = "c:\\hack\\automatizacao\\template.mp4";
-        String audioPath = "c:\\hack\\automatizacao\\locucao.wav";
-        String outputPath = "c:\\hack\\automatizacao\\output.mp4";
+        String videoPath = "C:\\hack\\automatizacao\\template.mp4";
+        String audioPath = "C:\\hack\\automatizacao\\locucao.wav";
+        String outputPath = "C:\\hack\\automatizacao\\output.mp4";
 
         try {
             ProcessBuilder pb = new ProcessBuilder(
