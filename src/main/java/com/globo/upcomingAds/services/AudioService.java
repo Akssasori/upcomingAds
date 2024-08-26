@@ -3,7 +3,9 @@ package com.globo.upcomingAds.services;
 import com.globo.upcomingAds.utils.MediaUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 @Service
 public class AudioService {
@@ -19,7 +21,17 @@ public class AudioService {
                     audioTreated
             );
 
+            pb.redirectErrorStream(true);  // Redireciona o erro padrão para a saída padrão
             Process process = pb.start();
+
+            // Consumir a saída para evitar bloqueio
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    System.out.println(line); // Ou registre em um log
+                }
+            }
+
             process.waitFor();
 
             if (process.exitValue() == 0) {
@@ -42,7 +54,13 @@ public class AudioService {
 
     }
 
-    private void trimSoundtrack(String mediaDuration, String soundtrack, String soundtrackOutput) throws IOException, InterruptedException {
+    private void trimSoundtrack(String mediaDuration, String soundtrack, String soundtrackOutput) throws Exception {
+
+        double soundTrackDuration = MediaUtils.getMediaDuration(soundtrack);
+
+        if (soundTrackDuration < Double.parseDouble(mediaDuration)) {
+            throw new RuntimeException("Erro, trilha sonora tem um tempo menor que o vídeo.");
+        }
 
         ProcessBuilder pb = new ProcessBuilder(
                 "ffmpeg",
@@ -52,7 +70,17 @@ public class AudioService {
                 "-c:a", "libmp3lame",
                 soundtrackOutput
         );
+
+        pb.redirectErrorStream(true);
         Process process = pb.start();
+
+        // Consumir a saída para evitar bloqueio
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        }
         process.waitFor();
 
         if (process.exitValue() != 0) {
