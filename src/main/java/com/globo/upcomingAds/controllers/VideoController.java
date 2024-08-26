@@ -19,6 +19,13 @@ import java.io.IOException;
 @RequestMapping("video")
 public class VideoController {
 
+    public static final String LOGO_PATH = "C:\\hack\\automatizacao\\logo.mp4";
+    public static final String OUTPUT_PATH = "C:\\hack\\automatizacao\\output.mp4";
+    public static final String SOUNDTRACK_OUTPUT = "C:\\hack\\automatizacao\\trilhaSonoraOutput.mp3";
+    public static final String SOUNDTRACK = "C:\\hack\\automatizacao\\trilhaSonora.mp3";
+    public static final String AUDIO_TREATED = "C:\\hack\\automatizacao\\locucaoOutput.wav";
+    public static final String AUDIO_PATH = "C:\\hack\\automatizacao\\locucao.wav";
+    public static final String VIDEO_PATH = "C:\\hack\\automatizacao\\template.mp4";
     private final AudioService audioService;
     private final VideoService videoService;
 
@@ -33,18 +40,17 @@ public class VideoController {
         avutil.av_log_set_level(avutil.AV_LOG_ERROR);
         swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(),new DoublePointer());
 
-        String videoPath = "C:\\hack\\automatizacao\\template.mp4";
-        String audioPath = "C:\\hack\\automatizacao\\locucao.wav";
-        String audioTreated = "C:\\hack\\automatizacao\\locucaoOutput.wav";
-        String soundtrack = "C:\\hack\\automatizacao\\trilhaSonora.mp3";
-        String soundtrackOutput = "C:\\hack\\automatizacao\\trilhaSonoraOutput.mp3";
-        String outputPath = "C:\\hack\\automatizacao\\output.mp4";
+        String videoPath = VIDEO_PATH;
+        String audioPath = AUDIO_PATH;
+        String audioTreated = AUDIO_TREATED;
+        String soundtrack = SOUNDTRACK;
+        String soundtrackOutput = SOUNDTRACK_OUTPUT;
 
         audioService.removeSilence(audioPath,audioTreated);
         audioService.createSoundTrack(soundtrack, videoPath, soundtrackOutput);
         boolean isAudioShorterOrEqual = videoService.checkIfAudioFitsVideo(videoPath, audioTreated);
         System.out.println(isAudioShorterOrEqual);
-        return videoService.mergeVideoAudio(videoPath, audioTreated, outputPath, soundtrackOutput);
+        return videoService.mergeVideoAudio(videoPath, audioTreated, OUTPUT_PATH, soundtrackOutput, LOGO_PATH);
 
     }
 
