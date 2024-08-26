@@ -1,8 +1,5 @@
 package com.globo.upcomingAds.controllers;
 
-//import org.bytedeco.ffmpeg.global.avfilter;
-//import org.bytedeco.ffmpeg.global.avformat;
-//import org.bytedeco.ffmpeg.global.avcodec;
 import com.globo.upcomingAds.services.AudioService;
 import com.globo.upcomingAds.services.VideoService;
 import org.bytedeco.ffmpeg.global.avutil;
@@ -12,8 +9,6 @@ import org.bytedeco.javacpp.DoublePointer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
 
 @RestController
 @RequestMapping("video")

@@ -91,7 +91,7 @@ public class VideoService {
                     "-i", videoPath,
                     "-i", audioTreated,
                     "-i", soundtrackOutput,
-                    "-i", logoPath,  // Adiciona o vídeo do logo
+                    "-i", logoPath,  // -i arquivos de entrada
                     "-filter_complex",
                     "[1:a]volume=1.0[a1];" +
                             "[2:a]volume=-8dB[a2];" +  // Ajusta o volume da trilha sonora
