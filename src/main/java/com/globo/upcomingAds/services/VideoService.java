@@ -11,18 +11,100 @@ public class VideoService {
 
     public String mergeVideoAudio(String videoPath, String audioTreated, String outputPath, String soundtrackOutput) {
         try {
+//            ProcessBuilder pb = new ProcessBuilder(
+//                    "ffmpeg",
+//                    "-i", videoPath,
+//                    "-i", audioTreated,
+//                    "-c:v", "copy",
+//                    "-c:a", "aac",
+//                    "-strict", "experimental",
+//                    outputPath
+//            );
+//            ProcessBuilder pb = new ProcessBuilder(
+//                    "ffmpeg",
+//                    "-i", videoPath,
+//                    "-i", audioTreated,
+//                    "-i", soundtrackOutput,
+//                    "-filter_complex",
+//                    "[1:a]volume=1.0[a1];[2:a]volume=-8dB[a2];[a1][a2]amix=inputs=2:duration=first[aout]",
+//                    "-map", "0:v",
+//                    "-map", "[aout]",
+//                    "-c:v", "copy",
+//                    "-c:a", "aac",
+//                    "-strict", "experimental",
+//                    outputPath
+//            );
+
+//            ProcessBuilder pb = new ProcessBuilder(
+//                    "ffmpeg",
+//                    "-i", videoPath,
+//                    "-i", audioTreated,
+//                    "-i", soundtrackOutput,
+//                    "-filter_complex",
+//                    "[1:a]volume=1.0[a1];" +
+//                            "[2:a]volume=-8dB,apad=pad_dur=0.1[a2];" +  // Adiciona uma pequena margem de silêncio
+//                            "[a1][a2]amix=inputs=2:duration=first[aout]", // Usa a duração do vídeo para o áudio combinado
+//                    "-map", "0:v",
+//                    "-map", "[aout]",
+//                    "-c:v", "copy",
+//                    "-c:a", "aac",
+//                    "-strict", "experimental",
+//                    outputPath
+//            );
+//            ProcessBuilder pb = new ProcessBuilder(
+//                    "ffmpeg",
+//                    "-i", videoPath,
+//                    "-i", audioTreated,
+//                    "-i", soundtrackOutput,
+//                    "-filter_complex",
+//                    "[1:a]volume=1.0[a1];" +
+//                            "[2:a]volume=-8dB[a2];" +  // Ajusta o volume da trilha sonora
+//                            "[a1][a2]amix=inputs=2:duration=first[aout]", // Combina os áudios mantendo a duração do vídeo
+//                    "-map", "0:v",
+//                    "-map", "[aout]",
+//                    "-c:v", "copy",
+//                    "-c:a", "aac",
+//                    "-strict", "experimental",
+//                    outputPath
+//            );
             ProcessBuilder pb = new ProcessBuilder(
                     "ffmpeg",
                     "-i", videoPath,
                     "-i", audioTreated,
+                    "-i", soundtrackOutput,
+                    "-filter_complex",
+                    "[1:a]volume=1.0[a1];" +
+                            "[2:a]volume=-8dB[a2];" +  // Ajusta o volume da trilha sonora
+                            "[a1][a2]amix=inputs=2:duration=first:dropout_transition=3[aout]", // Combina os áudios mantendo a duração do vídeo
+                    "-map", "0:v",
+                    "-map", "[aout]",
                     "-c:v", "copy",
                     "-c:a", "aac",
                     "-strict", "experimental",
                     outputPath
             );
 
+            pb.redirectErrorStream(true); // Redireciona o erro padrão para a saída padrão
             Process process = pb.start();
+
+            // Cria uma thread para consumir a saída do processo
+            Thread outputReader = new Thread(() -> {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        System.out.println(line); // Ou registre em um log
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+
+            outputReader.start(); // Inicia a leitura da saída do processo
             process.waitFor();
+
+            if (process.exitValue() != 0) {
+                throw new RuntimeException("Erro ao fazer merge video e áudios.");
+            }
 
             return "Vídeo criado com sucesso: " + outputPath;
         } catch (Exception e) {
