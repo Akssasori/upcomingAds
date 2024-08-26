@@ -26,6 +26,7 @@ public class VideoController {
     public static final String AUDIO_TREATED = "C:\\hack\\automatizacao\\locucaoOutput.wav";
     public static final String AUDIO_PATH = "C:\\hack\\automatizacao\\locucao.wav";
     public static final String VIDEO_PATH = "C:\\hack\\automatizacao\\template.mp4";
+
     private final AudioService audioService;
     private final VideoService videoService;
 
@@ -40,17 +41,11 @@ public class VideoController {
         avutil.av_log_set_level(avutil.AV_LOG_ERROR);
         swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(),new DoublePointer());
 
-        String videoPath = VIDEO_PATH;
-        String audioPath = AUDIO_PATH;
-        String audioTreated = AUDIO_TREATED;
-        String soundtrack = SOUNDTRACK;
-        String soundtrackOutput = SOUNDTRACK_OUTPUT;
-
-        audioService.removeSilence(audioPath,audioTreated);
-        audioService.createSoundTrack(soundtrack, videoPath, soundtrackOutput);
-        boolean isAudioShorterOrEqual = videoService.checkIfAudioFitsVideo(videoPath, audioTreated);
+        audioService.removeSilence(AUDIO_PATH,AUDIO_TREATED);
+        audioService.createSoundTrack(SOUNDTRACK, VIDEO_PATH, SOUNDTRACK_OUTPUT);
+        boolean isAudioShorterOrEqual = videoService.checkIfAudioFitsVideo(VIDEO_PATH, AUDIO_TREATED);
         System.out.println(isAudioShorterOrEqual);
-        return videoService.mergeVideoAudio(videoPath, audioTreated, OUTPUT_PATH, soundtrackOutput, LOGO_PATH);
+        return videoService.mergeVideoAudio(VIDEO_PATH, AUDIO_TREATED, OUTPUT_PATH, SOUNDTRACK_OUTPUT, LOGO_PATH);
 
     }
 
@@ -60,11 +55,7 @@ public class VideoController {
         avutil.av_log_set_level(avutil.AV_LOG_ERROR);
         swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(),new DoublePointer());
 
-        String videoPath = "C:\\hack\\automatizacao\\template.mp4";
-        String soundtrack = "C:\\hack\\automatizacao\\trilhaSonora.mp3";
-        String soundtrackOutput = "C:\\hack\\automatizacao\\trilhaSonoraOutput.mp3";
-
-        audioService.createSoundTrack(soundtrack, videoPath, soundtrackOutput);
+        audioService.createSoundTrack(SOUNDTRACK, VIDEO_PATH, SOUNDTRACK_OUTPUT);
 
     }
 
