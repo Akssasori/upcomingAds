@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 @Service
 public class VideoService {
 
-    public String mergeVideoAudio(String videoPath, String audioTreated, String outputPath) {
+    public String mergeVideoAudio(String videoPath, String audioTreated, String outputPath, String soundtrackOutput) {
         try {
             ProcessBuilder pb = new ProcessBuilder(
                     "ffmpeg",

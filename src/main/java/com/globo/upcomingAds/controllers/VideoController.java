@@ -41,10 +41,10 @@ public class VideoController {
         String outputPath = "C:\\hack\\automatizacao\\output.mp4";
 
         audioService.removeSilence(audioPath,audioTreated);
-//        audioService.createSoundTrack(soundtrack, videoPath, soundtrackOutput);
+        audioService.createSoundTrack(soundtrack, videoPath, soundtrackOutput);
         boolean isAudioShorterOrEqual = videoService.checkIfAudioFitsVideo(videoPath, audioTreated);
         System.out.println(isAudioShorterOrEqual);
-        return videoService.mergeVideoAudio(videoPath, audioTreated, outputPath);
+        return videoService.mergeVideoAudio(videoPath, audioTreated, outputPath, soundtrackOutput);
 
     }
 
@@ -55,11 +55,8 @@ public class VideoController {
         swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(),new DoublePointer());
 
         String videoPath = "C:\\hack\\automatizacao\\template.mp4";
-        String audioPath = "C:\\hack\\automatizacao\\locucao.wav";
-        String audioTreated = "C:\\hack\\automatizacao\\locucaoOutput.wav";
         String soundtrack = "C:\\hack\\automatizacao\\trilhaSonora.mp3";
         String soundtrackOutput = "C:\\hack\\automatizacao\\trilhaSonoraOutput.mp3";
-        String outputPath = "C:\\hack\\automatizacao\\output.mp4";
 
         audioService.createSoundTrack(soundtrack, videoPath, soundtrackOutput);
 

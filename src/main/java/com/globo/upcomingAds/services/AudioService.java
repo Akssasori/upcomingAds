@@ -28,7 +28,7 @@ public class AudioService {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    System.out.println(line); // Ou registre em um log
+                    System.out.println(line); // registrar em um log?
                 }
             }
 
