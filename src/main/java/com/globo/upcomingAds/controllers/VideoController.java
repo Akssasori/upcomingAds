@@ -1,5 +1,7 @@
 package com.globo.upcomingAds.controllers;
 
+import com.globo.upcomingAds.enums.TemplateAudioEnum;
+import com.globo.upcomingAds.enums.TemplateVideoEnum;
 import com.globo.upcomingAds.services.AudioService;
 import com.globo.upcomingAds.services.VideoService;
 import org.bytedeco.ffmpeg.global.avutil;
@@ -8,7 +10,10 @@ import org.bytedeco.ffmpeg.swscale.SwsFilter;
 import org.bytedeco.javacpp.DoublePointer;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("video")
@@ -20,7 +25,8 @@ public class VideoController {
     public static final String SOUNDTRACK = "C:\\hack\\automatizacao\\trilhaSonora.mp3";
     public static final String AUDIO_TREATED = "C:\\hack\\automatizacao\\locucaoOutput.wav";
     public static final String AUDIO_PATH = "C:\\hack\\automatizacao\\locucao.wav";
-    public static final String VIDEO_PATH = "C:\\hack\\automatizacao\\template.mp4";
+    public static final String VIDEO_TEMPLATE_1_PATH = "C:\\hack\\automatizacao\\template.mp4";
+    public static final String VIDEO_TEMPLATE_2_PATH = "C:\\hack\\automatizacao\\template02.mp4";
 
     private final AudioService audioService;
     private final VideoService videoService;
@@ -30,17 +36,31 @@ public class VideoController {
         this.videoService = videoService;
     }
 
+    @GetMapping("/teste-template")
+    public String testeTemplate(@RequestParam(required = true) final TemplateVideoEnum videoEnum,
+                                @RequestParam(required = true) final TemplateAudioEnum audioEnum) throws Exception {
+        avutil.av_log_set_level(avutil.AV_LOG_ERROR);
+        swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(), new DoublePointer());
+
+        audioService.removeSilence(AUDIO_PATH, AUDIO_TREATED);
+        audioService.createSoundTrack(audioEnum.getId(), videoEnum.getId(), SOUNDTRACK_OUTPUT);
+        boolean isAudioShorterOrEqual = videoService.checkIfAudioFitsVideo(videoEnum.getId(), AUDIO_TREATED);
+        System.out.println(isAudioShorterOrEqual);
+        return videoService.mergeVideoAudio(videoEnum.getId(), AUDIO_TREATED, OUTPUT_PATH, SOUNDTRACK_OUTPUT, LOGO_PATH);
+
+    }
+
     @GetMapping("/merge-video-audio")
     public String mergeVideoWithAudio() throws Exception {
         // Inicializar as bibliotecas do FFmpeg 6.1.1
         avutil.av_log_set_level(avutil.AV_LOG_ERROR);
-        swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(),new DoublePointer());
+        swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(), new DoublePointer());
 
-        audioService.removeSilence(AUDIO_PATH,AUDIO_TREATED);
-        audioService.createSoundTrack(SOUNDTRACK, VIDEO_PATH, SOUNDTRACK_OUTPUT);
-        boolean isAudioShorterOrEqual = videoService.checkIfAudioFitsVideo(VIDEO_PATH, AUDIO_TREATED);
+        audioService.removeSilence(AUDIO_PATH, AUDIO_TREATED);
+        audioService.createSoundTrack(SOUNDTRACK, VIDEO_TEMPLATE_1_PATH, SOUNDTRACK_OUTPUT);
+        boolean isAudioShorterOrEqual = videoService.checkIfAudioFitsVideo(VIDEO_TEMPLATE_1_PATH, AUDIO_TREATED);
         System.out.println(isAudioShorterOrEqual);
-        return videoService.mergeVideoAudio(VIDEO_PATH, AUDIO_TREATED, OUTPUT_PATH, SOUNDTRACK_OUTPUT, LOGO_PATH);
+        return videoService.mergeVideoAudio(VIDEO_TEMPLATE_1_PATH, AUDIO_TREATED, OUTPUT_PATH, SOUNDTRACK_OUTPUT, LOGO_PATH);
 
     }
 
@@ -48,12 +68,11 @@ public class VideoController {
     public void teste() throws Exception {
         // Inicializar as bibliotecas do FFmpeg 6.1.1
         avutil.av_log_set_level(avutil.AV_LOG_ERROR);
-        swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(),new DoublePointer());
+        swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(), new DoublePointer());
 
-        audioService.createSoundTrack(SOUNDTRACK, VIDEO_PATH, SOUNDTRACK_OUTPUT);
+        audioService.createSoundTrack(SOUNDTRACK, VIDEO_TEMPLATE_1_PATH, SOUNDTRACK_OUTPUT);
 
     }
-
 
 
 }
