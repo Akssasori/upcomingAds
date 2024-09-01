@@ -11,6 +11,10 @@ spring:
     async:
       request-timeout: 80000
 
+api:
+  elevenlabs:
+    key: ${ELEVENLABS_API_KEY}
+
 
 
 
