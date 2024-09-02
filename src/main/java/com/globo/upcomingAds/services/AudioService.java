@@ -138,4 +138,22 @@ public class AudioService {
         }
 
     }
+
+    public String getVoice(String voiceId) {
+
+        try {
+            return webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/v1/voices/" + voiceId)
+//                            .queryParam("show_legacy", voiceId)
+                            .build())
+                    .header("xi-api-key", API_KEY)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException e) {
+            System.err.println("Erro na requisição: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }

@@ -2,6 +2,7 @@ package com.globo.upcomingAds.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.globo.upcomingAds.dtos.response.VoiceDTO;
 import com.globo.upcomingAds.dtos.response.VoiceResponseDTO;
 import com.globo.upcomingAds.services.AudioService;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,14 @@ public class AudioController {
             System.out.println(voiceDTO.getVoice_id() + " " + voiceDTO.getName());
         });
         return ResponseEntity.ok(voiceResponseDTO);
+    }
+
+    @GetMapping("get-voice/{voice_id}")
+    public ResponseEntity<VoiceDTO> getVoice(@PathVariable String voice_id) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String voices = audioService.getVoice(voice_id);
+        VoiceDTO voiceDTO  = objectMapper.readValue(voices, VoiceDTO.class);
+        return ResponseEntity.ok(voiceDTO);
     }
 
 }
