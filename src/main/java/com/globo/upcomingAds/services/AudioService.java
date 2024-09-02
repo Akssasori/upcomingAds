@@ -16,6 +16,10 @@ public class AudioService {
     @Value("${api.elevenlabs.key}")
     private String API_KEY;
 
+    public static final String OUTPUT_FORMAT = "mp3_22050_32";
+    public static final String ELEVEN_TURBO_V_2_5 = "eleven_turbo_v2_5";
+    public static final String PT = "pt";
+
     private final WebClient webClient;
 
     public AudioService(WebClient webClient) {
@@ -104,11 +108,25 @@ public class AudioService {
     public InputStream convertTextToSpeech(String voiceId, String text) {
 
         try {
+
+            String requestBody = "{"
+                    + "\"language_code\":\"pt\","
+                    + "\"text\":\"" + text + "\","
+                    + "\"model_id\":\"eleven_turbo_v2_5\","
+                    + "\"voice_settings\":{"
+                    + "\"stability\":0.4,"
+                    + "\"similarity_boost\":0.6"
+                    + "},"
+                    + "\"output_format\":\"" + OUTPUT_FORMAT + "\""
+                    + "}";
+
             byte[] audioBytes = webClient.post()
-                    .uri("/v1/text-to-speech/" + voiceId)
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/v1/text-to-speech/" + voiceId) // +"?output_format="+OUTPUT_FORMAT)
+                            .build())
                     .header("xi-api-key", API_KEY)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue("{\"text\":\"" + text + "\"}")
+                    .bodyValue(requestBody)
                     .retrieve()
                     .bodyToMono(byte[].class)
                     .block();

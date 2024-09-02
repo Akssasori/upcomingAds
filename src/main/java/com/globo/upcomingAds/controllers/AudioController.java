@@ -24,14 +24,15 @@ public class AudioController {
     }
 
     @PostMapping("/convert-text-to-speech")
-    public ResponseEntity<String> convertTextToSpeech(@RequestParam String voiceId, @RequestBody String text) {
+    public ResponseEntity<String> convertTextToSpeech(@RequestParam String voiceId,
+                                                      @RequestBody String text) {
 
     try {
 
         InputStream inputStream = audioService.convertTextToSpeech(voiceId, text);
 
         // Caminho onde o arquivo será salvo
-        Path outputPath = Paths.get("C:/hack/automatizacao/audio_output.mpga");
+        Path outputPath = Paths.get("C:/hack/automatizacao/audio_output.mp3");
         File outputFile = outputPath.toFile();
 
         // Salvando o arquivo no sistema de arquivos
