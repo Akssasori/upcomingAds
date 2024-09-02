@@ -1,8 +1,9 @@
 package com.globo.upcomingAds.controllers;
 
-import kong.unirest.HttpResponse;
-import kong.unirest.Unirest;
-import org.springframework.beans.factory.annotation.Value;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.globo.upcomingAds.dtos.response.VoiceResponseDTO;
+import com.globo.upcomingAds.services.AudioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,26 +16,18 @@ import java.nio.file.Paths;
 @RequestMapping("audio")
 public class AudioController {
 
-    @Value("${api.elevenlabs.key}")
-    private String API_KEY;
+    private final AudioService audioService;
 
+    public AudioController(AudioService audioService) {
+        this.audioService = audioService;
+    }
 
     @PostMapping("/convert-text-to-speech")
     public ResponseEntity<String> convertTextToSpeech(@RequestParam String voiceId, @RequestBody String text) {
 
     try {
 
-        HttpResponse<String> response = Unirest.post("https://api.elevenlabs.io/v1/text-to-speech/" + voiceId)
-                .header("xi-api-key", API_KEY)
-                .header("Content-Type", "application/json")
-                .body("{\"text\":\"" + text + "\"}")
-                .asString();
-
-        if (response.getStatus() != 200) {
-            return ResponseEntity.status(response.getStatus()).body("Erro na requisição para a API: " + response.getStatusText());
-        }
-
-        InputStream inputStream = convertResponseInputStream(response);
+        InputStream inputStream = audioService.convertTextToSpeech(voiceId, text);
 
         // Caminho onde o arquivo será salvo
         Path outputPath = Paths.get("C:/hack/automatizacao/audio_output.mpga");
@@ -59,10 +52,15 @@ public class AudioController {
 
     }
 
-    private InputStream convertResponseInputStream(HttpResponse<String> response) {
-        byte[] audioBytes = response.getBody().getBytes();
-        InputStream inputStream = new ByteArrayInputStream(audioBytes);
-        return inputStream;
+    @GetMapping("get-voices/{show_legacy}")
+    public ResponseEntity<VoiceResponseDTO> getVoices(@PathVariable boolean show_legacy) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        String voices = audioService.getVoices(show_legacy);
+        VoiceResponseDTO voiceResponseDTO  = objectMapper.readValue(voices, VoiceResponseDTO.class);
+        voiceResponseDTO.getVoices().forEach(voiceDTO -> {
+            System.out.println(voiceDTO.getVoice_id() + " " + voiceDTO.getName());
+        });
+        return ResponseEntity.ok(voiceResponseDTO);
     }
 
 }

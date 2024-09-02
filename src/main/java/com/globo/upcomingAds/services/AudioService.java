@@ -1,14 +1,26 @@
 package com.globo.upcomingAds.services;
 
 import com.globo.upcomingAds.utils.MediaUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.util.UriBuilder;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 @Service
 public class AudioService {
+
+    @Value("${api.elevenlabs.key}")
+    private String API_KEY;
+
+    private final WebClient webClient;
+
+    public AudioService(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     public String removeSilence(String audioPath, String audioTreated) throws IOException, InterruptedException {
 
@@ -85,6 +97,44 @@ public class AudioService {
 
         if (process.exitValue() != 0) {
             throw new RuntimeException("Erro ao recortar áudio.");
+        }
+
+    }
+
+    public InputStream convertTextToSpeech(String voiceId, String text) {
+
+        try {
+            byte[] audioBytes = webClient.post()
+                    .uri("/v1/text-to-speech/" + voiceId)
+                    .header("xi-api-key", API_KEY)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue("{\"text\":\"" + text + "\"}")
+                    .retrieve()
+                    .bodyToMono(byte[].class)
+                    .block();
+
+            return new ByteArrayInputStream(audioBytes);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+
+    }
+
+    public String getVoices(boolean showLegacy) {
+
+        try {
+            return webClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/v1/voices")
+                            .queryParam("show_legacy", showLegacy)
+                            .build())
+                    .header("xi-api-key", API_KEY)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException e) {
+            System.err.println("Erro na requisição: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+            throw new RuntimeException(e.getMessage());
         }
 
     }
