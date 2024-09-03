@@ -18,5 +18,9 @@ public class LabelsDTO {
     private String gender;
     @JsonProperty("use_case")
     private String use_case;
+    @JsonProperty("language")
+    private String language;
+    @JsonProperty("descriptive")
+    private String descriptive;
 
 }

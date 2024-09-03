@@ -1,12 +1,13 @@
 package com.globo.upcomingAds.utils;
 
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-@Component
+@NoArgsConstructor
 public class MediaUtils {
 
     public static double getMediaDuration(String mediaPath) throws Exception {

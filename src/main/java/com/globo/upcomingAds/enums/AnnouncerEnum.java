@@ -49,6 +49,7 @@ public enum AnnouncerEnum {
     LILY("pFZP5JQG7iQjIQuC4Bku"),
     SERENA("pMsXgVXv3BLzUgSXRplE"),
     ADAM("pNInz6obpgDQGcFmaJgB"),
+    LEONARDO("UaeEQHfiDI8l58WWXiwS"),
     NICOLE("piTKgcLEGmPE4e6mEKli"),
     BILL("pqHfZKP75CvOlQylNhV4"),
     JESSIE("t0jbNlBVZ17f02VDIeMI"),

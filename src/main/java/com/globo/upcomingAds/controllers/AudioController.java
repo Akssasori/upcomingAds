@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globo.upcomingAds.dtos.response.VoiceDTO;
 import com.globo.upcomingAds.dtos.response.VoiceResponseDTO;
+import com.globo.upcomingAds.enums.AnnouncerEnum;
 import com.globo.upcomingAds.services.AudioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,12 @@ public class AudioController {
     }
 
     @PostMapping("/convert-text-to-speech")
-    public ResponseEntity<String> convertTextToSpeech(@RequestParam String voiceId,
+    public ResponseEntity<String> convertTextToSpeech(@RequestParam final AnnouncerEnum voiceId,
                                                       @RequestBody String text) {
 
     try {
 
-        InputStream inputStream = audioService.convertTextToSpeech(voiceId, text);
+        InputStream inputStream = audioService.convertTextToSpeech(voiceId.getId(), text);
 
         // Caminho onde o arquivo será salvo
         Path outputPath = Paths.get("C:/hack/automatizacao/audio_output.mp3");
