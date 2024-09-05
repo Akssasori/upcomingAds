@@ -9,6 +9,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import org.springframework.web.util.UriBuilder;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Service
 public class AudioService {
@@ -140,6 +142,21 @@ public class AudioService {
                     .retrieve()
                     .bodyToMono(byte[].class)
                     .block();
+
+            InputStream inputStream =  new ByteArrayInputStream(audioBytes);
+
+            // Caminho onde o arquivo será salvo
+            Path outputPath = Paths.get("C:/hack/automatizacao/audio_output.mp3");
+            File outputFile = outputPath.toFile();
+
+            // Salvando o arquivo no sistema de arquivos
+            try (FileOutputStream fos = new FileOutputStream(outputFile)) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = inputStream.read(buffer)) != -1) {
+                    fos.write(buffer, 0, bytesRead);
+                }
+            }
 
             return new ByteArrayInputStream(audioBytes);
         } catch (Exception e) {

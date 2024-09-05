@@ -1,5 +1,6 @@
 package com.globo.upcomingAds.controllers;
 
+import com.globo.upcomingAds.enums.AnnouncerEnum;
 import com.globo.upcomingAds.enums.TemplateAudioEnum;
 import com.globo.upcomingAds.enums.TemplateVideoEnum;
 import com.globo.upcomingAds.services.AudioService;
@@ -8,10 +9,7 @@ import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.ffmpeg.global.swscale;
 import org.bytedeco.ffmpeg.swscale.SwsFilter;
 import org.bytedeco.javacpp.DoublePointer;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("video")
@@ -22,6 +20,7 @@ public class VideoController {
     public static final String SOUNDTRACK_OUTPUT = "C:\\hack\\automatizacao\\trilhaSonoraOutput.mp3";
     public static final String SOUNDTRACK = "C:\\hack\\automatizacao\\trilhaSonora.mp3";
     public static final String AUDIO_TREATED = "C:\\hack\\automatizacao\\locucaoOutput.wav";
+    public static final String AUDIO_TREATED_2 = "C:\\hack\\automatizacao\\audio_output.mp3";
     public static final String AUDIO_PATH = "C:\\hack\\automatizacao\\locucao.wav";
     public static final String VIDEO_TEMPLATE_1_PATH = "C:\\hack\\automatizacao\\template.mp4";
     public static final String VIDEO_TEMPLATE_2_PATH = "C:\\hack\\automatizacao\\template02.mp4";
@@ -34,9 +33,9 @@ public class VideoController {
         this.videoService = videoService;
     }
 
-    @GetMapping("/teste-template")
-    public String testeTemplate(@RequestParam(required = true) final TemplateVideoEnum videoEnum,
-                                @RequestParam(required = true) final TemplateAudioEnum audioEnum) throws Exception {
+    @GetMapping("/create-video-voiceover-delivered")
+    public String testeTemplate(@RequestParam final TemplateVideoEnum videoEnum,
+                                @RequestParam final TemplateAudioEnum audioEnum) throws Exception {
         avutil.av_log_set_level(avutil.AV_LOG_ERROR);
         swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(), new DoublePointer());
 
@@ -45,6 +44,21 @@ public class VideoController {
         boolean isAudioShorterOrEqual = videoService.checkIfAudioFitsVideo(videoEnum.getId(), AUDIO_TREATED);
         System.out.println(isAudioShorterOrEqual);
         return videoService.mergeVideoAudio(videoEnum.getId(), AUDIO_TREATED, OUTPUT_PATH, SOUNDTRACK_OUTPUT, LOGO_PATH);
+
+    }
+
+    @PostMapping("/create-video-and-voiceover")
+    public String testeTemplate(@RequestParam final TemplateVideoEnum videoEnum,
+                                @RequestParam final TemplateAudioEnum audioEnum,
+                                @RequestParam final AnnouncerEnum voiceId,
+                                @RequestBody String text) throws Exception {
+        avutil.av_log_set_level(avutil.AV_LOG_ERROR);
+        swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(), new DoublePointer());
+
+        audioService.convertTextToSpeech(voiceId.getId(), text);
+        audioService.createSoundTrack(audioEnum.getId(), videoEnum.getId(), SOUNDTRACK_OUTPUT);
+
+        return videoService.mergeVideoAudio(videoEnum.getId(), AUDIO_TREATED_2, OUTPUT_PATH, SOUNDTRACK_OUTPUT, LOGO_PATH);
 
     }
 

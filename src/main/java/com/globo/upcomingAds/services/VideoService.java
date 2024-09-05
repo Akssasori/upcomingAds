@@ -86,16 +86,42 @@ public class VideoService {
 
             //teste 22
             //"[0:v][logo_transparente]overlay=W-w-10:H-h-10[vout]",  // Posiciona o logo no canto inferior direito
+//            ProcessBuilder pb = new ProcessBuilder(
+//                    "ffmpeg",
+//                    "-i", videoPath,
+//                    "-i", audioTreated,
+//                    "-i", soundtrackOutput,
+//                    "-i", logoPath,  // -i arquivos de entrada
+//                    "-filter_complex",
+//                    "[1:a]volume=1.0[a1];" +
+//                            "[2:a]volume=-8dB[a2];" +  // Ajusta o volume da trilha sonora
+//                            "[a1][a2]amix=inputs=2:duration=first:dropout_transition=3[aout];" + // Combina os áudios mantendo a duração do vídeo
+//                            "[3:v]chromakey=0x00FF00:0.1:0.2,scale=iw*0.2:ih*0.2[logo_transparente];" +  // Remove fundo verde e redimensiona o logo em 80%
+//                            "[0:v][logo_transparente]overlay=10:H-h-10[vout]",  // Posiciona o logo no canto inferior esquerdo
+//                    "-map", "[vout]",
+//                    "-map", "[aout]",
+//                    "-c:v", "libx264",
+//                    "-c:a", "aac",
+//                    "-strict", "experimental",
+//                    outputPath
+//            );
+
+            double videoDuration = getMediaDuration(videoPath);
+            double audioDuration1 = getMediaDuration(audioTreated);
+
+            double startDelaySeconds = (videoDuration - audioDuration1) / 2;
+            int startDelayMillis = (int) (startDelaySeconds * 1000);
+
             ProcessBuilder pb = new ProcessBuilder(
                     "ffmpeg",
                     "-i", videoPath,
                     "-i", audioTreated,
                     "-i", soundtrackOutput,
-                    "-i", logoPath,  // -i arquivos de entrada
+                    "-i", logoPath,
                     "-filter_complex",
-                    "[1:a]volume=1.0[a1];" +
+                    "[1:a]adelay=" + startDelayMillis + "|"+ startDelayMillis +"[a1];" +  // Adiciona atraso para centralizar o áudio
                             "[2:a]volume=-8dB[a2];" +  // Ajusta o volume da trilha sonora
-                            "[a1][a2]amix=inputs=2:duration=first:dropout_transition=3[aout];" + // Combina os áudios mantendo a duração do vídeo
+                            "[a1][a2]amix=inputs=2:duration=longest:dropout_transition=3[aout];" + // Combina os áudios mantendo a duração do áudio mais longo
                             "[3:v]chromakey=0x00FF00:0.1:0.2,scale=iw*0.2:ih*0.2[logo_transparente];" +  // Remove fundo verde e redimensiona o logo em 80%
                             "[0:v][logo_transparente]overlay=10:H-h-10[vout]",  // Posiciona o logo no canto inferior esquerdo
                     "-map", "[vout]",
@@ -106,6 +132,27 @@ public class VideoService {
                     outputPath
             );
 
+/*
+            ProcessBuilder pb = new ProcessBuilder(
+                    "ffmpeg",
+                    "-i", videoPath,
+                    "-i", audioTreated,
+                    "-i", soundtrackOutput,
+                    "-i", logoPath,  // -i arquivos de entrada
+                    "-filter_complex",
+                    "[1:a]volume=1.0[a1];" +
+                            "[2:a]volume=-8dB[a2];" +  // Ajusta o volume da trilha sonora
+                            "[a1][a2]amix=inputs=2:duration=longest:dropout_transition=3[aout];" + // Mantém a duração do áudio mais longo
+                            "[3:v]chromakey=0x00FF00:0.1:0.2,scale=iw*0.2:ih*0.2[logo_transparente];" +  // Remove fundo verde e redimensiona o logo em 80%
+                            "[0:v][logo_transparente]overlay=10:H-h-10[vout]",  // Posiciona o logo no canto inferior esquerdo
+                    "-map", "[vout]",
+                    "-map", "[aout]",
+                    "-c:v", "libx264",
+                    "-c:a", "aac",
+                    "-strict", "experimental",
+                    outputPath
+            );
+*/
             pb.redirectErrorStream(true); // Redireciona o erro padrão para a saída padrão
             Process process = pb.start();
 
