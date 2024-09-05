@@ -29,22 +29,7 @@ public class AudioController {
                                                       @RequestBody String text) {
 
     try {
-
         audioService.convertTextToSpeech(voiceId.getId(), text);
-
-//        // Caminho onde o arquivo será salvo
-//        Path outputPath = Paths.get("C:/hack/automatizacao/audio_output.mp3");
-//        File outputFile = outputPath.toFile();
-//
-//        // Salvando o arquivo no sistema de arquivos
-//        try (FileOutputStream fos = new FileOutputStream(outputFile)) {
-//            byte[] buffer = new byte[1024];
-//            int bytesRead;
-//            while ((bytesRead = inputStream.read(buffer)) != -1) {
-//                fos.write(buffer, 0, bytesRead);
-//            }
-//        }
-
         return ResponseEntity.ok("Áudio salvo com sucesso");
 
     } catch (Exception e) {

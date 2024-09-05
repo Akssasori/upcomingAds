@@ -21,6 +21,7 @@ public class AudioService {
     public static final String OUTPUT_FORMAT = "mp3_22050_32";
     public static final String ELEVEN_TURBO_V_2_5 = "eleven_turbo_v2_5";
     public static final String PT = "pt";
+    public static final String OUTPUT_PATH = "C:\\hack\\automatizacao\\audio_output.mp3";
 
     private final WebClient webClient;
 
@@ -145,8 +146,8 @@ public class AudioService {
 
             InputStream inputStream =  new ByteArrayInputStream(audioBytes);
 
-            // Caminho onde o arquivo será salvo
-            Path outputPath = Paths.get("C:/hack/automatizacao/audio_output.mp3");
+            // Path onde o arquivo será salvo
+            Path outputPath = Paths.get(OUTPUT_PATH);
             File outputFile = outputPath.toFile();
 
             // Salvando o arquivo no sistema de arquivos

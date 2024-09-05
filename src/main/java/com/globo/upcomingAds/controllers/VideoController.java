@@ -34,7 +34,7 @@ public class VideoController {
     }
 
     @GetMapping("/create-video-voiceover-delivered")
-    public String testeTemplate(@RequestParam final TemplateVideoEnum videoEnum,
+    public String createVideoVoiceoverDelivered(@RequestParam final TemplateVideoEnum videoEnum,
                                 @RequestParam final TemplateAudioEnum audioEnum) throws Exception {
         avutil.av_log_set_level(avutil.AV_LOG_ERROR);
         swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(), new DoublePointer());
@@ -48,7 +48,7 @@ public class VideoController {
     }
 
     @PostMapping("/create-video-and-voiceover")
-    public String testeTemplate(@RequestParam final TemplateVideoEnum videoEnum,
+    public String createVideoAndVoiceover(@RequestParam final TemplateVideoEnum videoEnum,
                                 @RequestParam final TemplateAudioEnum audioEnum,
                                 @RequestParam final AnnouncerEnum voiceId,
                                 @RequestBody String text) throws Exception {
