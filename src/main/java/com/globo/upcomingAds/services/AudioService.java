@@ -109,15 +109,25 @@ public class AudioService {
 
         try {
 
+//            String requestBody = "{"
+//                    + "\"language_code\":\"pt\","
+//                    + "\"text\":\"" + text + "\","
+//                    + "\"model_id\":\"eleven_turbo_v2_5\","
+//                    + "\"voice_settings\":{"
+//                    + "\"stability\":0.4,"
+//                    + "\"similarity_boost\":0.6"
+//                    + "},"
+//                    + "\"output_format\":\"" + OUTPUT_FORMAT + "\""
+//                    + "}";
             String requestBody = "{"
-                    + "\"language_code\":\"pt\","
                     + "\"text\":\"" + text + "\","
-                    + "\"model_id\":\"eleven_turbo_v2_5\","
                     + "\"voice_settings\":{"
                     + "\"stability\":0.4,"
                     + "\"similarity_boost\":0.6"
                     + "},"
-                    + "\"output_format\":\"" + OUTPUT_FORMAT + "\""
+                    + "\"model_id\":\"eleven_multilingual_v1\""
+//                    + "\"model_id\":\"eleven_multilingual_v1\","
+//                    + "\"language_code\":\"pt\""
                     + "}";
 
             byte[] audioBytes = webClient.post()
