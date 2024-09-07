@@ -40,10 +40,5 @@ public class MediaUtils {
         }
     }
 
-    public static void startFfmpeg() {
-        avutil.av_log_set_level(avutil.AV_LOG_ERROR);
-        swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(), new DoublePointer());
-    }
-
 
 }

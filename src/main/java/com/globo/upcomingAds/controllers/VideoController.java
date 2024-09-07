@@ -36,8 +36,6 @@ public class VideoController {
     @GetMapping("/create-video-voiceover-delivered")
     public String createVideoVoiceoverDelivered(@RequestParam final TemplateVideoEnum videoEnum,
                                 @RequestParam final TemplateAudioEnum audioEnum) throws Exception {
-        avutil.av_log_set_level(avutil.AV_LOG_ERROR);
-        swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(), new DoublePointer());
 
         audioService.removeSilence(AUDIO_PATH, AUDIO_TREATED);
         audioService.createSoundTrack(audioEnum.getId(), videoEnum.getId(), SOUNDTRACK_OUTPUT);
@@ -52,21 +50,16 @@ public class VideoController {
                                 @RequestParam final TemplateAudioEnum audioEnum,
                                 @RequestParam final AnnouncerEnum voiceId,
                                 @RequestBody String text) throws Exception {
-        avutil.av_log_set_level(avutil.AV_LOG_ERROR);
-        swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(), new DoublePointer());
 
         audioService.convertTextToSpeech(voiceId.getId(), text);
         audioService.createSoundTrack(audioEnum.getId(), videoEnum.getId(), SOUNDTRACK_OUTPUT);
-
         return videoService.mergeVideoAudio(videoEnum.getId(), AUDIO_TREATED_2, OUTPUT_PATH, SOUNDTRACK_OUTPUT, LOGO_PATH);
 
     }
 
     @GetMapping("/merge-video-audio")
     public String mergeVideoWithAudio() throws Exception {
-        // Inicializar as bibliotecas do FFmpeg 6.1.1
-        avutil.av_log_set_level(avutil.AV_LOG_ERROR);
-        swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(), new DoublePointer());
+
 
         audioService.removeSilence(AUDIO_PATH, AUDIO_TREATED);
         audioService.createSoundTrack(SOUNDTRACK, VIDEO_TEMPLATE_1_PATH, SOUNDTRACK_OUTPUT);
@@ -78,12 +71,7 @@ public class VideoController {
 
     @GetMapping("/create-soundtrack")
     public void teste() throws Exception {
-        // Inicializar as bibliotecas do FFmpeg 6.1.1
-        avutil.av_log_set_level(avutil.AV_LOG_ERROR);
-        swscale.sws_getContext(0, 0, 0, 0, 0, 0, 0, new SwsFilter(), new SwsFilter(), new DoublePointer());
-
         audioService.createSoundTrack(SOUNDTRACK, VIDEO_TEMPLATE_1_PATH, SOUNDTRACK_OUTPUT);
-
     }
 
 
