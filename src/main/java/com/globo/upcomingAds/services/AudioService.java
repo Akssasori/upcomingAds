@@ -67,13 +67,13 @@ public class AudioService {
         }
     }
 
-    public void createSoundTrack(String soundtrack, String videoPath, String soundtrackOutput) throws Exception {
+    public String createSoundTrack(String soundtrack, String videoPath, String soundtrackOutput) throws Exception {
         double mediaDuration = MediaUtils.getMediaDuration(videoPath);
-        trimSoundtrack(Double.toString(mediaDuration), soundtrack, soundtrackOutput);
+        return trimSoundtrack(Double.toString(mediaDuration), soundtrack, soundtrackOutput);
 
     }
 
-    private void trimSoundtrack(String mediaDuration, String soundtrack, String soundtrackOutput) throws Exception {
+    private String trimSoundtrack(String mediaDuration, String soundtrack, String soundtrackOutput) throws Exception {
 
         double soundTrackDuration = MediaUtils.getMediaDuration(soundtrack);
 
@@ -105,23 +105,12 @@ public class AudioService {
         if (process.exitValue() != 0) {
             throw new RuntimeException("Erro ao recortar áudio.");
         }
-
+        return "Trilha criada com sucesso";
     }
 
     public InputStream convertTextToSpeech(String voiceId, String text) {
 
         try {
-
-//            String requestBody = "{"
-//                    + "\"language_code\":\"pt\","
-//                    + "\"text\":\"" + text + "\","
-//                    + "\"model_id\":\"eleven_turbo_v2_5\","
-//                    + "\"voice_settings\":{"
-//                    + "\"stability\":0.4,"
-//                    + "\"similarity_boost\":0.6"
-//                    + "},"
-//                    + "\"output_format\":\"" + OUTPUT_FORMAT + "\""
-//                    + "}";
             String requestBody = "{"
                     + "\"text\":\"" + text + "\","
                     + "\"voice_settings\":{"
@@ -129,13 +118,12 @@ public class AudioService {
                     + "\"similarity_boost\":0.6"
                     + "},"
                     + "\"model_id\":\"eleven_multilingual_v1\""
-//                    + "\"model_id\":\"eleven_multilingual_v1\","
 //                    + "\"language_code\":\"pt\""
                     + "}";
 
             byte[] audioBytes = webClient.post()
                     .uri(uriBuilder -> uriBuilder
-                            .path("/v1/text-to-speech/" + voiceId) // +"?output_format="+OUTPUT_FORMAT)
+                            .path("/v1/text-to-speech/" + voiceId)
                             .build())
                     .header("xi-api-key", API_KEY)
                     .contentType(MediaType.APPLICATION_JSON)
@@ -146,11 +134,9 @@ public class AudioService {
 
             InputStream inputStream =  new ByteArrayInputStream(audioBytes);
 
-            // Path onde o arquivo será salvo
             Path outputPath = Paths.get(OUTPUT_PATH);
             File outputFile = outputPath.toFile();
 
-            // Salvando o arquivo no sistema de arquivos
             try (FileOutputStream fos = new FileOutputStream(outputFile)) {
                 byte[] buffer = new byte[1024];
                 int bytesRead;
@@ -158,12 +144,10 @@ public class AudioService {
                     fos.write(buffer, 0, bytesRead);
                 }
             }
-
             return new ByteArrayInputStream(audioBytes);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
-
     }
 
     public String getVoices(boolean showLegacy) {

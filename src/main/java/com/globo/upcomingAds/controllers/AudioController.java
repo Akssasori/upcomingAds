@@ -5,18 +5,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globo.upcomingAds.dtos.response.VoiceDTO;
 import com.globo.upcomingAds.dtos.response.VoiceResponseDTO;
 import com.globo.upcomingAds.enums.AnnouncerEnum;
+import com.globo.upcomingAds.enums.TemplateVideoEnum;
 import com.globo.upcomingAds.services.AudioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("audio")
 public class AudioController {
+
+    public static final String SOUNDTRACK = "C:\\hack\\automatizacao\\trilhaSonora.mp3";
+    public static final String SOUNDTRACK_OUTPUT = "C:\\hack\\automatizacao\\trilhaSonoraOutput.mp3";
 
     private final AudioService audioService;
 
@@ -57,6 +63,11 @@ public class AudioController {
         String voices = audioService.getVoice(voice_id);
         VoiceDTO voiceDTO  = objectMapper.readValue(voices, VoiceDTO.class);
         return ResponseEntity.ok(voiceDTO);
+    }
+
+    @PostMapping("/create-soundtrack-for-video")
+    public ResponseEntity<String> createSoundtrack(@RequestParam final TemplateVideoEnum videoEnum) throws Exception {
+        return ResponseEntity.ok().body(audioService.createSoundTrack(SOUNDTRACK, videoEnum.getId(), SOUNDTRACK_OUTPUT));
     }
 
 }
