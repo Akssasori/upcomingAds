@@ -3,19 +3,16 @@ package com.globo.upcomingAds.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globo.upcomingAds.dtos.response.VoiceDTO;
+import com.globo.upcomingAds.dtos.response.VoiceIdDTO;
 import com.globo.upcomingAds.dtos.response.VoiceResponseDTO;
 import com.globo.upcomingAds.enums.AnnouncerEnum;
 import com.globo.upcomingAds.enums.TemplateVideoEnum;
 import com.globo.upcomingAds.services.AudioService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("audio")
@@ -69,5 +66,15 @@ public class AudioController {
     public ResponseEntity<String> createSoundtrack(@RequestParam final TemplateVideoEnum videoEnum) throws Exception {
         return ResponseEntity.ok().body(audioService.createSoundTrack(SOUNDTRACK, videoEnum.getId(), SOUNDTRACK_OUTPUT));
     }
+
+    @PostMapping(value = "/create-speaker/{name}",  consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<VoiceIdDTO> createSpeaker(@RequestPart ("files") MultipartFile[] multipartFiles,
+                                                    @PathVariable (required = true) String name) {
+
+        String voiceId = audioService.createSpeaker(multipartFiles, name.toUpperCase());
+        return ResponseEntity.ok().body(VoiceIdDTO.builder().voiceId(voiceId).build());
+//        "voice_id": "{\"voice_id\":\"Xe3OffDOLOvGwmAoqubb\"}"
+    }
+
 
 }

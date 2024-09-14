@@ -4,9 +4,14 @@ import com.globo.upcomingAds.utils.MediaUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.util.UriBuilder;
+import reactor.core.publisher.Mono;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -14,9 +19,6 @@ import java.nio.file.Paths;
 
 @Service
 public class AudioService {
-
-    @Value("${api.elevenlabs.key}")
-    private String API_KEY;
 
     public static final String OUTPUT_FORMAT = "mp3_22050_32";
     public static final String ELEVEN_TURBO_V_2_5 = "eleven_turbo_v2_5";
@@ -125,7 +127,6 @@ public class AudioService {
                     .uri(uriBuilder -> uriBuilder
                             .path("/v1/text-to-speech/" + voiceId)
                             .build())
-                    .header("xi-api-key", API_KEY)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(requestBody)
                     .retrieve()
@@ -158,7 +159,6 @@ public class AudioService {
                             .path("/v1/voices")
                             .queryParam("show_legacy", showLegacy)
                             .build())
-                    .header("xi-api-key", API_KEY)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
@@ -177,7 +177,7 @@ public class AudioService {
                             .path("/v1/voices/" + voiceId)
 //                            .queryParam("show_legacy", voiceId)
                             .build())
-                    .header("xi-api-key", API_KEY)
+//                    .header("xi-api-key", API_KEY)
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
@@ -185,5 +185,21 @@ public class AudioService {
             System.err.println("Erro na requisição: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
             throw new RuntimeException(e.getMessage());
         }
+    }
+
+    public String createSpeaker(MultipartFile[] multipartFiles, String name) {
+
+        WebClient.ResponseSpec responseSpec = webClient.post()
+                .uri("/v1/voices/add")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData("name", name)
+                        .with("description", "Gerente")  // Descrição fixa, pode ajustar conforme necessário
+                        .with("files", multipartFiles[0].getResource()))  // Supondo que você envie um arquivo. Ajuste para múltiplos arquivos se necessário
+                .retrieve();
+
+        // Processar a resposta da API externa
+        Mono<String> responseBody = responseSpec.bodyToMono(String.class);
+
+        return responseBody.block();
     }
 }

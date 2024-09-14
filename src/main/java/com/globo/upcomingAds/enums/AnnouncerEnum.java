@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum AnnouncerEnum {
 
+//    ANA("Xe3OffDOLOvGwmAoqubb"),
     RACHEL("21m00Tcm4TlvDq8ikWAM"),
     DREW("29vD33N1CtxCmqQRPOHJ"),
     CLYDE("2EiwWnXFnvU5JabPnv8n"),
