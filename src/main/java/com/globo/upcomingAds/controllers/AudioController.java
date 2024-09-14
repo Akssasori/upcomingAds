@@ -73,7 +73,6 @@ public class AudioController {
 
         String voiceId = audioService.createSpeaker(multipartFiles, name.toUpperCase());
         return ResponseEntity.ok().body(VoiceIdDTO.builder().voiceId(voiceId).build());
-//        "voice_id": "{\"voice_id\":\"Xe3OffDOLOvGwmAoqubb\"}"
     }
 
 
