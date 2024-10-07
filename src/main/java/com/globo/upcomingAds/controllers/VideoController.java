@@ -1,8 +1,10 @@
 package com.globo.upcomingAds.controllers;
 
+import com.globo.upcomingAds.dtos.response.LabelsDTO;
 import com.globo.upcomingAds.enums.AnnouncerEnum;
 import com.globo.upcomingAds.enums.TemplateAudioEnum;
 import com.globo.upcomingAds.enums.TemplateVideoEnum;
+import com.globo.upcomingAds.mappers.TestMapper;
 import com.globo.upcomingAds.services.AudioService;
 import com.globo.upcomingAds.services.VideoService;
 import org.springframework.http.HttpStatus;
@@ -28,10 +30,12 @@ public class VideoController {
 
     private final AudioService audioService;
     private final VideoService videoService;
+    private final TestMapper mapper;
 
-    public VideoController(AudioService audioService, VideoService videoService) {
+    public VideoController(AudioService audioService, VideoService videoService, TestMapper mapper) {
         this.audioService = audioService;
         this.videoService = videoService;
+        this.mapper = mapper;
     }
 
     @GetMapping("/create-video-voiceover-delivered")
