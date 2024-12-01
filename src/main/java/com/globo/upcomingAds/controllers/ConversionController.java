@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("conversion")
 public class ConversionController {
 
-    public static final String FOLDER_PATH = "C:\\hack\\automatizacao\\trilhaSonoraOutput.mp3";
+    public static final String FOLDER_PATH = "C:\\hack\\converterVideos";
 
     private final ConversionService conversionService;
 

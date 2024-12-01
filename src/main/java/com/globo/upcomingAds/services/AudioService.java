@@ -1,5 +1,8 @@
 package com.globo.upcomingAds.services;
 
+import com.globo.upcomingAds.client.ElevenLabsClient;
+import com.globo.upcomingAds.dtos.request.AudioRequestDTO;
+import com.globo.upcomingAds.dtos.request.VoiceSettingsRequestDTO;
 import com.globo.upcomingAds.utils.MediaUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -26,9 +29,11 @@ public class AudioService {
     public static final String OUTPUT_PATH = "C:\\hack\\automatizacao\\audio_output.mp3";
 
     private final WebClient webClient;
+    private final ElevenLabsClient elevenLabsClient;
 
-    public AudioService(WebClient webClient) {
+    public AudioService(WebClient webClient, ElevenLabsClient elevenLabsClient) {
         this.webClient = webClient;
+        this.elevenLabsClient = elevenLabsClient;
     }
 
     public String removeSilence(String audioPath, String audioTreated) throws IOException, InterruptedException {
@@ -113,27 +118,37 @@ public class AudioService {
     public InputStream convertTextToSpeech(String voiceId, String text) {
 
         try {
-            String requestBody = "{"
-                    + "\"text\":\"" + text + "\","
-                    + "\"voice_settings\":{"
-                    + "\"stability\":0.4,"
-                    + "\"similarity_boost\":0.6"
-                    + "},"
-                    + "\"model_id\":\"eleven_multilingual_v1\""
-//                    + "\"language_code\":\"pt\""
-                    + "}";
+//            String requestBody = "{"
+//                    + "\"text\":\"" + text + "\","
+//                    + "\"voice_settings\":{"
+//                    + "\"stability\":0.4,"
+//                    + "\"similarity_boost\":0.6"
+//                    + "},"
+//                    + "\"model_id\":\"eleven_multilingual_v1\""
+////                    + "\"language_code\":\"pt\""
+//                    + "}";
+//
+//            byte[] audioBytes = webClient.post()
+//                    .uri(uriBuilder -> uriBuilder
+//                            .path("/v1/text-to-speech/" + voiceId)
+//                            .build())
+//                    .contentType(MediaType.APPLICATION_JSON)
+//                    .bodyValue(requestBody)
+//                    .retrieve()
+//                    .bodyToMono(byte[].class)
+//                    .block();
 
-            byte[] audioBytes = webClient.post()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/v1/text-to-speech/" + voiceId)
+
+            byte[] audioBytes = elevenLabsClient.convertTextToSpeech(voiceId, AudioRequestDTO.builder()
+                    .modelId("eleven_turbo_v2_5")
+                    .text(text)
+                    .voiceSettings(VoiceSettingsRequestDTO.builder()
+                            .stability(0.4)
+                            .similarityBoost(0.6)
                             .build())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(requestBody)
-                    .retrieve()
-                    .bodyToMono(byte[].class)
-                    .block();
+                    .build());
 
-            InputStream inputStream =  new ByteArrayInputStream(audioBytes);
+            InputStream inputStream = new ByteArrayInputStream(audioBytes);
 
             Path outputPath = Paths.get(OUTPUT_PATH);
             File outputFile = outputPath.toFile();
