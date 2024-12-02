@@ -14,4 +14,7 @@ public class VoiceSettingsRequestDTO {
 
     @JsonProperty("similarity_boost")
     private double similarityBoost;
+
+    @JsonProperty("style")
+    private double style;
 }

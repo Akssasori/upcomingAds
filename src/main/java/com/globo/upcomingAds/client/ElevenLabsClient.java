@@ -17,4 +17,10 @@ public interface ElevenLabsClient {
             produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     byte[] convertTextToSpeech(@PathVariable("voiceId") String voiceId,
                                @RequestBody AudioRequestDTO requestBody);
+
+    @PostMapping(value = "/v1/text-to-speech/{voiceId}/stream",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    byte[] convertTextToSpeechStream(@PathVariable("voiceId") String voiceId,
+                               @RequestBody AudioRequestDTO requestBody);
 }

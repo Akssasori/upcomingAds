@@ -17,4 +17,7 @@ public class AudioRequestDTO {
 
     @JsonProperty("model_id")
     private String modelId;
+
+    @JsonProperty("language_code")
+    private String languageCode;
 }
