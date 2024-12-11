@@ -50,7 +50,7 @@ public class AudioController {
                                                             @RequestParam(required = false) final Double stability,
                                                             @RequestParam(required = false) final Double similarityBoost,
                                                             @RequestParam(required = false) final Double style,
-                                                            @RequestBody String text) throws IOException {
+                                                            @RequestBody String text) {
 
         return ResponseEntity.ok(audioService.convertTextToSpeechStream(voiceId.getId(),
                 text, stability, similarityBoost, style));

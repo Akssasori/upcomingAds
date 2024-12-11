@@ -17,6 +17,8 @@ import reactor.core.publisher.Mono;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -201,13 +203,17 @@ public class AudioService {
     public String convertTextToSpeechStream(String voiceId, String text, Double stability,
                                             Double similarityBoost, Double style) {
 
-        validateInputs(voiceId, text, stability, similarityBoost, style);
+        log.info("Iniciando validação dos inputs");
+        Map<String, Double> params = validateInputs(voiceId, text, stability, similarityBoost, style);
 
-        byte[] audioBytes = fetchAudioFromAPI(voiceId, text, stability, similarityBoost, style);
+        log.info("Iniciando criação da locução");
+        byte[] audioBytes = fetchAudioFromAPI(voiceId, text, params.get("stability"),
+                params.get("similarityBoost"), params.get("style"));
 
+        log.info("Salvando arquivo .mp3");
         saveAudioFile(audioBytes);
 
-        return "Audio created successfully";
+        return "Audio created successfully " + OUTPUT_PATH;
     }
 
     private void saveAudioFile(byte[] audioBytes) {
@@ -247,10 +253,7 @@ public class AudioService {
         return elevenLabsClient.convertTextToSpeechStream(voiceId, request);
     }
 
-    private void validateInputs(String voiceId, String text, Double stability, Double similarityBoost, Double style) {
-        double defaultStability = 0.4;
-        double defaultSimilarityBoost = 0.6;
-        double defaultStyle = 0.9;
+    private Map<String, Double> validateInputs(String voiceId, String text, Double stability, Double similarityBoost, Double style) {
 
         if (Objects.isNull(voiceId) || voiceId.isBlank()) {
             throw new IllegalArgumentException("Voice ID cannot be null or empty");
@@ -258,15 +261,22 @@ public class AudioService {
         if (Objects.isNull(text) || text.isBlank()) {
             throw new IllegalArgumentException("Text cannot be null or empty");
         }
-        if (Objects.isNull(stability) || stability < 0 || stability > 1) {
-            stability = defaultStability;
-        }
-        if (Objects.isNull(similarityBoost) || similarityBoost < 0 || similarityBoost > 1) {
-            similarityBoost = defaultSimilarityBoost;
-        }
-        if (Objects.isNull(style) || style < 0 || style > 1) {
-            style = defaultStyle;
-        }
+
+        double defaultStability = 0.4;
+        double defaultSimilarityBoost = 0.6;
+        double defaultStyle = 0.9;
+
+        stability = (stability == null || stability < 0 || stability > 1) ? defaultStability : stability;
+        similarityBoost = (similarityBoost == null || similarityBoost < 0 || similarityBoost > 1) ? defaultSimilarityBoost : similarityBoost;
+        style = (style == null || style < 0 || style > 1) ? defaultStyle : style;
+
+        Map<String, Double> params = new HashMap<>();
+
+        params.put("stability", stability);
+        params.put("similarityBoost", similarityBoost);
+        params.put("style", style);
+
+        return params;
     }
 
 }
