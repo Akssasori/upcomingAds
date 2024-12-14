@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("audio")
@@ -83,9 +84,11 @@ public class AudioController {
 
     @PostMapping(value = "/create-speaker/{name}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<VoiceIdDTO> createSpeaker(@RequestPart("files") MultipartFile[] multipartFiles,
-                                                    @PathVariable(required = true) String name) {
+                                                    @PathVariable(required = true) String name,
+                                                    @RequestParam(required = true) String description,
+                                                    @RequestParam(required = true) boolean removeBackgroundNoise) {
 
-        String voiceId = audioService.createSpeaker(multipartFiles, name.toUpperCase());
+        String voiceId = audioService.createSpeaker(multipartFiles, name.toUpperCase(), description, removeBackgroundNoise);
         return ResponseEntity.ok().body(VoiceIdDTO.builder().voiceId(voiceId).build());
     }
 

@@ -15,4 +15,7 @@ public class VoiceIdDTO {
     @JsonProperty("voice_id")
     private String voiceId;
 
+    @JsonProperty("requires_verification")
+    private boolean requiresVerification;
+
 }

@@ -16,7 +16,7 @@ public class FeignClientConfig {
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
             requestTemplate.header("xi-api-key", apiKey);
-            requestTemplate.header("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+//            requestTemplate.header("Content-Type", MediaType.APPLICATION_JSON_VALUE);
         };
     }
 }

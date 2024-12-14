@@ -3,10 +3,12 @@ package com.globo.upcomingAds.services;
 import com.globo.upcomingAds.client.ElevenLabsClient;
 import com.globo.upcomingAds.dtos.request.AudioRequestDTO;
 import com.globo.upcomingAds.dtos.request.VoiceSettingsRequestDTO;
+import com.globo.upcomingAds.dtos.response.VoiceIdDTO;
 import com.globo.upcomingAds.enums.ModelIdEnum;
 import com.globo.upcomingAds.utils.MediaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -17,9 +19,7 @@ import reactor.core.publisher.Mono;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -184,20 +184,17 @@ public class AudioService {
         }
     }
 
-    public String createSpeaker(MultipartFile[] multipartFiles, String name) {
+    public String createSpeaker(MultipartFile[] multipartFiles, String name, String description, boolean removeBackgroundNoise) {
 
-        WebClient.ResponseSpec responseSpec = webClient.post()
-                .uri("/v1/voices/add")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData("name", name)
-                        .with("description", "Gerente")  // Descrição fixa, pode ajustar conforme necessário
-                        .with("files", multipartFiles[0].getResource()))  // Supondo que você envie um arquivo. Ajuste para múltiplos arquivos se necessário
-                .retrieve();
+        if (multipartFiles == null || multipartFiles.length == 0) {
+            throw new IllegalArgumentException("No files provided for upload.");
+        }
 
-        // Processar a resposta da API externa
-        Mono<String> responseBody = responseSpec.bodyToMono(String.class);
+        List<MultipartFile> files = Arrays.asList(multipartFiles);
 
-        return responseBody.block();
+        ResponseEntity<VoiceIdDTO> voiceIdDTOResponseEntity = elevenLabsClient.addVoice(files, name, removeBackgroundNoise, description);
+
+        return voiceIdDTOResponseEntity.getBody().getVoiceId();
     }
 
     public String convertTextToSpeechStream(String voiceId, String text, Double stability,

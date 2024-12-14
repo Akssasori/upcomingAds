@@ -8,6 +8,7 @@ import lombok.Getter;
 public enum AnnouncerEnum {
 
     LIGIA("6x8ch2QacbiwlJdYqYSb"),
+    THIAGO("DSoWrn9GzoeY4u0knKuw"),
     RACHEL("21m00Tcm4TlvDq8ikWAM"),
     DREW("29vD33N1CtxCmqQRPOHJ"),
     CLYDE("2EiwWnXFnvU5JabPnv8n"),
