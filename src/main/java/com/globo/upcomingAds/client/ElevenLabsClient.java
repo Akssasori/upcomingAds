@@ -2,7 +2,6 @@ package com.globo.upcomingAds.client;
 
 import com.globo.upcomingAds.configs.FeignClientConfig;
 import com.globo.upcomingAds.dtos.request.AudioRequestDTO;
-import com.globo.upcomingAds.dtos.response.AudioVoiceAddDTO;
 import com.globo.upcomingAds.dtos.response.VoiceIdDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
