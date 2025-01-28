@@ -19,10 +19,15 @@ ai:
   elevenLabs:
     url: https://api.elevenlabs.io
     name: elevenLabsClient
+  claude:
+    url: https://api.anthropic.com/v1
+    name: claudeClient
 
 api:
   elevenlabs:
     key: ${ELEVENLABS_API_KEY}
+  claude:
+    key: ${ANTHROPIC_API_KEY}
 
 
 

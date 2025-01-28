@@ -12,7 +12,7 @@ public class ClientConfig {
     private String API_KEY;
 
     @Bean
-    public WebClient webClient(){
+    public WebClient elevenLabsWebClient(){
         return WebClient.builder()
                 .baseUrl("https://api.elevenlabs.io")
                 .defaultHeader("xi-api-key", API_KEY)
