@@ -1,8 +1,8 @@
 package com.globo.upcomingAds.client;
 
 import com.globo.upcomingAds.configs.FeignClientConfig;
-import com.globo.upcomingAds.dtos.ClaudeResponse;
-import com.globo.upcomingAds.dtos.request.ClaudeRequest;
+import com.globo.upcomingAds.dtos.response.claude.ClaudeResponse;
+import com.globo.upcomingAds.dtos.request.claude.ClaudeRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

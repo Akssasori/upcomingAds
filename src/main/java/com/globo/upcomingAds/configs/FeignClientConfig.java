@@ -12,7 +12,7 @@ public class FeignClientConfig {
     @Value("${api.elevenlabs.key}")
     private String apiKey;
 
-    @Bean
+    @Bean(name = "elevenLabsClient")
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
             requestTemplate.header("xi-api-key", apiKey);

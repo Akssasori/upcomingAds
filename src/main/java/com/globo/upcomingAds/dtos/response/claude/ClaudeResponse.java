@@ -1,5 +1,6 @@
-package com.globo.upcomingAds.dtos;
+package com.globo.upcomingAds.dtos.response.claude;
 
+import com.globo.upcomingAds.dtos.Message;
 import lombok.Getter;
 import lombok.Setter;
 

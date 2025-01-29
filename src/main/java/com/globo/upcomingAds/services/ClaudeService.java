@@ -1,8 +1,8 @@
 package com.globo.upcomingAds.services;
 
 import com.globo.upcomingAds.client.ClaudeClient;
-import com.globo.upcomingAds.dtos.ClaudeResponse;
-import com.globo.upcomingAds.dtos.request.ClaudeRequest;
+import com.globo.upcomingAds.dtos.response.claude.ClaudeResponse;
+import com.globo.upcomingAds.dtos.request.claude.ClaudeRequest;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

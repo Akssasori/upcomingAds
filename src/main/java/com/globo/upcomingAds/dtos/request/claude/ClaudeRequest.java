@@ -1,4 +1,4 @@
-package com.globo.upcomingAds.dtos.request;
+package com.globo.upcomingAds.dtos.request.claude;
 
 import com.globo.upcomingAds.dtos.Message;
 import lombok.Getter;
