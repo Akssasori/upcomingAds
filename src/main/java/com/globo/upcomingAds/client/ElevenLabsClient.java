@@ -1,6 +1,6 @@
 package com.globo.upcomingAds.client;
 
-import com.globo.upcomingAds.configs.FeignClientConfig;
+import com.globo.upcomingAds.configs.ClientElevenLabsConfig;
 import com.globo.upcomingAds.dtos.request.AudioRequestDTO;
 import com.globo.upcomingAds.dtos.response.VoiceIdDTO;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 @FeignClient(name = "${ai.elevenLabs.name}",
-        url = "${ai.elevenLabs.url}",configuration = FeignClientConfig.class)
+        url = "${ai.elevenLabs.url}",configuration = ClientElevenLabsConfig.class)
 public interface ElevenLabsClient {
 
     @PostMapping(value = "/v1/text-to-speech/{voiceId}",
