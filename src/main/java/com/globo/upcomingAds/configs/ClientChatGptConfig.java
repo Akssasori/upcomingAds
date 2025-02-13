@@ -11,8 +11,8 @@ public class ClientChatGptConfig {
     @Value("${api.chatGpt.key}")
     private String apiChatGptKey;
 
-    @Bean(name = "openAiClient")
-    public RequestInterceptor requestInterceptor() {
+    @Bean(name = "chatGptRequestInterceptor")
+    public RequestInterceptor chatGptRequestInterceptor() {
         return requestTemplate -> requestTemplate.header("Authorization", "Bearer " + apiChatGptKey);
     }
 }

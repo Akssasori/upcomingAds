@@ -8,14 +8,12 @@ import com.globo.upcomingAds.dtos.response.VoiceResponseDTO;
 import com.globo.upcomingAds.enums.AnnouncerEnum;
 import com.globo.upcomingAds.enums.TemplateVideoEnum;
 import com.globo.upcomingAds.services.AudioService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("audio")
@@ -24,10 +22,20 @@ public class AudioController {
     public static final String SOUNDTRACK = "C:\\hack\\automatizacao\\trilhaSonora.mp3";
     public static final String SOUNDTRACK_OUTPUT = "C:\\hack\\automatizacao\\trilhaSonoraOutput.mp3";
 
+    @Value("${api.elevenlabs.key}")
+    private String apiKey;
+
     private final AudioService audioService;
 
     public AudioController(AudioService audioService) {
         this.audioService = audioService;
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        System.out.println(apiKey);
+        audioService.getMoldes();
+        return ResponseEntity.ok().body("ok");
     }
 
     @PostMapping("/convert-text-to-speech")

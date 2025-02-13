@@ -6,6 +6,7 @@ import com.globo.upcomingAds.dtos.request.VoiceSettingsRequestDTO;
 import com.globo.upcomingAds.dtos.response.VoiceIdDTO;
 import com.globo.upcomingAds.enums.ModelIdEnum;
 import com.globo.upcomingAds.utils.MediaUtils;
+import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,11 +31,9 @@ public class AudioService {
     public static final String PT = "pt";
     public static final String OUTPUT_PATH = "C:\\hack\\automatizacao\\audio_output.mp3";
 
-    private final WebClient webClient;
     private final ElevenLabsClient elevenLabsClient;
 
-    public AudioService(WebClient webClient, ElevenLabsClient elevenLabsClient) {
-        this.webClient = webClient;
+    public AudioService(ElevenLabsClient elevenLabsClient) {
         this.elevenLabsClient = elevenLabsClient;
     }
 
@@ -151,16 +150,9 @@ public class AudioService {
     public String getVoices(boolean showLegacy) {
 
         try {
-            return webClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/v1/voices")
-                            .queryParam("show_legacy", showLegacy)
-                            .build())
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-        } catch (WebClientResponseException e) {
-            System.err.println("Erro na requisição: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+            return elevenLabsClient.getVoices(showLegacy);
+        } catch (FeignException e) {
+            log.error("Erro na requisição: " + e.status() + " - " + e.contentUTF8());
             throw new RuntimeException(e.getMessage());
         }
 
@@ -169,17 +161,9 @@ public class AudioService {
     public String getVoice(String voiceId) {
 
         try {
-            return webClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/v1/voices/" + voiceId)
-//                            .queryParam("show_legacy", voiceId)
-                            .build())
-//                    .header("xi-api-key", API_KEY)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-        } catch (WebClientResponseException e) {
-            System.err.println("Erro na requisição: " + e.getStatusCode() + " - " + e.getResponseBodyAsString());
+            return elevenLabsClient.getVoice(voiceId);
+        } catch (FeignException e) {
+            log.error("Erro na requisição: " + e.status() + " - " + e.contentUTF8());
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -247,6 +231,12 @@ public class AudioService {
                 .voiceSettings(voiceSettings)
                 .build();
 
+        try {
+            elevenLabsClient.convertTextToSpeechStream(voiceId, request);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return elevenLabsClient.convertTextToSpeechStream(voiceId, request);
     }
 
@@ -276,5 +266,8 @@ public class AudioService {
         return params;
     }
 
+    public void getMoldes() {
+        elevenLabsClient.getModels();
+    }
 }
 

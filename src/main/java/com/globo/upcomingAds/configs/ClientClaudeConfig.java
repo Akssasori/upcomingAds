@@ -11,8 +11,8 @@ public class ClientClaudeConfig {
     @Value("${api.claude.key}")
     private String apiKey;
 
-    @Bean
-    public RequestInterceptor anthropicApiKeyInterceptor() {
+    @Bean(name = "claudeRequestInterceptor")
+    public RequestInterceptor claudeRequestInterceptor() {
         return requestTemplate -> {
             requestTemplate.header("x-api-key", apiKey);
             requestTemplate.header("anthropic-version", "2023-06-01");
