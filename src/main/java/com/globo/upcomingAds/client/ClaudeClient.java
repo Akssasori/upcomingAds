@@ -1,7 +1,6 @@
 package com.globo.upcomingAds.client;
 
 import com.globo.upcomingAds.configs.ClientClaudeConfig;
-import com.globo.upcomingAds.configs.ClientElevenLabsConfig;
 import com.globo.upcomingAds.dtos.response.claude.ClaudeResponse;
 import com.globo.upcomingAds.dtos.request.claude.ClaudeRequest;
 import org.springframework.cloud.openfeign.FeignClient;

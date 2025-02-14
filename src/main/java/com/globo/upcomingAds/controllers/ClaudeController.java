@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("claude")
+@Deprecated
 public class ClaudeController {
 
     private final ClaudeService claudeService;

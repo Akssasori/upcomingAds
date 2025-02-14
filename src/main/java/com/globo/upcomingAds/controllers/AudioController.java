@@ -33,7 +33,6 @@ public class AudioController {
 
     @GetMapping("/test")
     public ResponseEntity<String> test() {
-        System.out.println(apiKey);
         audioService.getMoldes();
         return ResponseEntity.ok().body("ok");
     }
