@@ -4,12 +4,14 @@ import com.globo.upcomingAds.client.ChatGptClient;
 import com.globo.upcomingAds.dtos.Message;
 import com.globo.upcomingAds.dtos.request.chatGpt.ChatGptRequestDTO;
 import com.globo.upcomingAds.dtos.response.chatGpt.ChatGptResponseDTO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 
 @Service
+@Slf4j
 public class ChatGptService {
 
     @Value("${chatGpt.model}")
@@ -25,6 +27,7 @@ public class ChatGptService {
     }
 
     public String getChatResponse(String userMessage) {
+        log.info("call LLM Api with userMessage: {}", userMessage);
         ChatGptRequestDTO build = ChatGptRequestDTO.builder()
                 .model(modelChatGpt)
                 .messages(Collections.singletonList(Message.builder().role(roleChatGpt).content(userMessage).build()))
@@ -32,6 +35,8 @@ public class ChatGptService {
 //        Message message = new Message("user", userMessage);
 //        ChatGptRequestDTO request = new ChatGptRequestDTO(modelChatGpt, Collections.singletonList(message));
         ChatGptResponseDTO response = chatGptClient.getChatResponse(build);
-        return response.getChoices().get(0).getMessage().getContent();
+        String content = response.getChoices().getFirst().getMessage().getContent();
+        log.info("response chatGpt: {}", content);
+        return content;
     }
 }

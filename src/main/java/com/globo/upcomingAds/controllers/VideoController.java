@@ -1,5 +1,6 @@
 package com.globo.upcomingAds.controllers;
 
+import com.globo.upcomingAds.dtos.VideoRequest;
 import com.globo.upcomingAds.dtos.response.LabelsDTO;
 import com.globo.upcomingAds.enums.AnnouncerEnum;
 import com.globo.upcomingAds.enums.TemplateAudioEnum;
@@ -7,6 +8,7 @@ import com.globo.upcomingAds.enums.TemplateVideoEnum;
 import com.globo.upcomingAds.mappers.TestMapper;
 import com.globo.upcomingAds.services.AudioService;
 import com.globo.upcomingAds.services.VideoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("video")
+@Slf4j
 public class VideoController {
 
     public static final String LOGO_PATH = "C:\\hack\\automatizacao\\logo.mp4";
@@ -30,12 +36,10 @@ public class VideoController {
 
     private final AudioService audioService;
     private final VideoService videoService;
-    private final TestMapper mapper;
 
-    public VideoController(AudioService audioService, VideoService videoService, TestMapper mapper) {
+    public VideoController(AudioService audioService, VideoService videoService) {
         this.audioService = audioService;
         this.videoService = videoService;
-        this.mapper = mapper;
     }
 
     @GetMapping("/create-video-voiceover-delivered")
@@ -63,6 +67,42 @@ public class VideoController {
         audioService.createSoundTrack(audioEnum.getId(), videoEnum.getId(), SOUNDTRACK_OUTPUT);
         return ResponseEntity.ok().body(videoService.mergeVideoAudio(videoEnum.getId(), AUDIO_TREATED_2, OUTPUT_PATH, SOUNDTRACK_OUTPUT, LOGO_PATH));
 
+    }
+
+    @PostMapping("/create-video")
+    public ResponseEntity<?> createVideo(@RequestBody VideoRequest request) {
+        log.info("Recebendo solicitação para criar vídeo com texto: {}", request.texto());
+
+        try {
+            // Aqui você implementaria a lógica para processar os dados
+            // e criar o vídeo com a locução
+
+            // Simulando processamento
+            log.info("Processando vídeo com locutor UUID: {}", request.locutorUuid());
+            log.info("Música selecionada: {}", request.musicaCaminho());
+            log.info("Vídeo selecionado: {}", request.videoPath());
+
+            // Se o logo for base64, você pode decodificá-lo aqui
+            boolean hasLogo = request.logo() != null && !request.logo().isEmpty();
+            log.info("Logo fornecido: {}", hasLogo ? "Sim" : "Não");
+
+            // Gera um ID para o vídeo criado
+            String videoId = UUID.randomUUID().toString();
+
+            // Retorna resposta de sucesso
+            return ResponseEntity.ok(Map.of(
+                    "status", "success",
+                    "message", "Vídeo criado com sucesso",
+                    "videoId", videoId
+            ));
+
+        } catch (Exception e) {
+            log.error("Erro ao processar solicitação de criação de vídeo", e);
+            return ResponseEntity.badRequest().body(Map.of(
+                    "status", "error",
+                    "message", "Erro ao criar vídeo: " + e.getMessage()
+            ));
+        }
     }
 
 

@@ -19,4 +19,10 @@ public class VoiceSettingsRequestDTO {
 
     @JsonProperty("style")
     private double style;
+
+    @JsonProperty("speed")
+    private double speed;
+
+    @JsonProperty("use_speaker_boos")
+    private boolean use_speaker_boos;
 }

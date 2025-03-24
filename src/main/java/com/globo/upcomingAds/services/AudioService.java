@@ -221,7 +221,9 @@ public class AudioService {
         VoiceSettingsRequestDTO voiceSettings = VoiceSettingsRequestDTO.builder()
                 .stability(stability)
                 .similarityBoost(similarityBoost)
+                .speed(1)
                 .style(style)
+                .use_speaker_boos(true)
                 .build();
 
         AudioRequestDTO request = AudioRequestDTO.builder()
