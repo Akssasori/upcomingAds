@@ -3,7 +3,11 @@ package com.globo.upcomingAds.dtos;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
 
 public record VideoRequest(
         @NotBlank(message = "O texto da locução é obrigatório")
@@ -67,5 +71,14 @@ public record VideoRequest(
                 ", temLogo=" + (logo != null && !logo.isEmpty()) +
                 ", fileName='" + fileName + '\'' +
                 '}';
+    }
+
+    public void saveBase64AsFile(String base64String, String filePath) throws IOException {
+        // Remover o prefixo (ex: "data:image/png;base64,")
+        String[] parts = base64String.split(",");
+        String base64Data = parts.length > 1 ? parts[1] : parts[0];
+
+        byte[] decodedBytes = Base64.getDecoder().decode(base64Data);
+        Files.write(Paths.get(filePath), decodedBytes);
     }
 }

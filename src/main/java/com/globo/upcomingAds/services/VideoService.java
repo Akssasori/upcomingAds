@@ -11,100 +11,6 @@ public class VideoService {
 
     public String mergeVideoAudio(String videoPath, String audioTreated, String outputPath, String soundtrackOutput, String logoPath) {
         try {
-//            ProcessBuilder pb = new ProcessBuilder(
-//                    "ffmpeg",
-//                    "-i", videoPath,
-//                    "-i", audioTreated,
-//                    "-c:v", "copy",
-//                    "-c:a", "aac",
-//                    "-strict", "experimental",
-//                    outputPath
-//            );
-//            ProcessBuilder pb = new ProcessBuilder(
-//                    "ffmpeg",
-//                    "-i", videoPath,
-//                    "-i", audioTreated,
-//                    "-i", soundtrackOutput,
-//                    "-filter_complex",
-//                    "[1:a]volume=1.0[a1];[2:a]volume=-8dB[a2];[a1][a2]amix=inputs=2:duration=first[aout]",
-//                    "-map", "0:v",
-//                    "-map", "[aout]",
-//                    "-c:v", "copy",
-//                    "-c:a", "aac",
-//                    "-strict", "experimental",
-//                    outputPath
-//            );
-
-//            ProcessBuilder pb = new ProcessBuilder(
-//                    "ffmpeg",
-//                    "-i", videoPath,
-//                    "-i", audioTreated,
-//                    "-i", soundtrackOutput,
-//                    "-filter_complex",
-//                    "[1:a]volume=1.0[a1];" +
-//                            "[2:a]volume=-8dB,apad=pad_dur=0.1[a2];" +  // Adiciona uma pequena margem de silêncio
-//                            "[a1][a2]amix=inputs=2:duration=first[aout]", // Usa a duração do vídeo para o áudio combinado
-//                    "-map", "0:v",
-//                    "-map", "[aout]",
-//                    "-c:v", "copy",
-//                    "-c:a", "aac",
-//                    "-strict", "experimental",
-//                    outputPath
-//            );
-//            ProcessBuilder pb = new ProcessBuilder(
-//                    "ffmpeg",
-//                    "-i", videoPath,
-//                    "-i", audioTreated,
-//                    "-i", soundtrackOutput,
-//                    "-filter_complex",
-//                    "[1:a]volume=1.0[a1];" +
-//                            "[2:a]volume=-8dB[a2];" +  // Ajusta o volume da trilha sonora
-//                            "[a1][a2]amix=inputs=2:duration=first[aout]", // Combina os áudios mantendo a duração do vídeo
-//                    "-map", "0:v",
-//                    "-map", "[aout]",
-//                    "-c:v", "copy",
-//                    "-c:a", "aac",
-//                    "-strict", "experimental",
-//                    outputPath
-//            );
-//            ProcessBuilder pb = new ProcessBuilder(
-//                    "ffmpeg",
-//                    "-i", videoPath,
-//                    "-i", audioTreated,
-//                    "-i", soundtrackOutput,
-//                    "-filter_complex",
-//                    "[1:a]volume=1.0[a1];" +
-//                            "[2:a]volume=-8dB[a2];" +  // Ajusta o volume da trilha sonora
-//                            "[a1][a2]amix=inputs=2:duration=first:dropout_transition=3[aout]", // Combina os áudios mantendo a duração do vídeo
-//                    "-map", "0:v",
-//                    "-map", "[aout]",
-//                    "-c:v", "copy",
-//                    "-c:a", "aac",
-//                    "-strict", "experimental",
-//                    outputPath
-//            );
-
-            //teste 22
-            //"[0:v][logo_transparente]overlay=W-w-10:H-h-10[vout]",  // Posiciona o logo no canto inferior direito
-//            ProcessBuilder pb = new ProcessBuilder(
-//                    "ffmpeg",
-//                    "-i", videoPath,
-//                    "-i", audioTreated,
-//                    "-i", soundtrackOutput,
-//                    "-i", logoPath,  // -i arquivos de entrada
-//                    "-filter_complex",
-//                    "[1:a]volume=1.0[a1];" +
-//                            "[2:a]volume=-8dB[a2];" +  // Ajusta o volume da trilha sonora
-//                            "[a1][a2]amix=inputs=2:duration=first:dropout_transition=3[aout];" + // Combina os áudios mantendo a duração do vídeo
-//                            "[3:v]chromakey=0x00FF00:0.1:0.2,scale=iw*0.2:ih*0.2[logo_transparente];" +  // Remove fundo verde e redimensiona o logo em 80%
-//                            "[0:v][logo_transparente]overlay=10:H-h-10[vout]",  // Posiciona o logo no canto inferior esquerdo
-//                    "-map", "[vout]",
-//                    "-map", "[aout]",
-//                    "-c:v", "libx264",
-//                    "-c:a", "aac",
-//                    "-strict", "experimental",
-//                    outputPath
-//            );
 
             double videoDuration = getMediaDuration(videoPath);
             double audioDuration1 = getMediaDuration(audioTreated);
@@ -112,7 +18,7 @@ public class VideoService {
             double startDelaySeconds = (videoDuration - audioDuration1) / 2;
             int startDelayMillis = (int) (startDelaySeconds * 1000);
 
-            ProcessBuilder pb = new ProcessBuilder(
+            /* ProcessBuilder pb = new ProcessBuilder(
                     "ffmpeg",
                     "-i", videoPath,
                     "-i", audioTreated,
@@ -130,21 +36,20 @@ public class VideoService {
                     "-c:a", "aac",
                     "-strict", "experimental",
                     outputPath
-            );
+            ); */
 
-/*
             ProcessBuilder pb = new ProcessBuilder(
                     "ffmpeg",
                     "-i", videoPath,
                     "-i", audioTreated,
                     "-i", soundtrackOutput,
-                    "-i", logoPath,  // -i arquivos de entrada
+                    "-i", logoPath,
                     "-filter_complex",
-                    "[1:a]volume=1.0[a1];" +
-                            "[2:a]volume=-8dB[a2];" +  // Ajusta o volume da trilha sonora
-                            "[a1][a2]amix=inputs=2:duration=longest:dropout_transition=3[aout];" + // Mantém a duração do áudio mais longo
-                            "[3:v]chromakey=0x00FF00:0.1:0.2,scale=iw*0.2:ih*0.2[logo_transparente];" +  // Remove fundo verde e redimensiona o logo em 80%
-                            "[0:v][logo_transparente]overlay=10:H-h-10[vout]",  // Posiciona o logo no canto inferior esquerdo
+                    "[1:a]volume=4dB,adelay=" + startDelayMillis + "|" + startDelayMillis + "[a1];" +  // Aumenta o volume do áudio tratado
+                            "[2:a]volume=-15dB[a2];" +  // Diminui um pouco mais a trilha sonora
+                            "[a1][a2]amix=inputs=2:duration=longest:dropout_transition=3[aout];" +
+                            "[3:v]scale=100:-1[logo_scaled];" +
+                            "[0:v][logo_scaled]overlay=10:main_h-overlay_h-10[vout]",
                     "-map", "[vout]",
                     "-map", "[aout]",
                     "-c:v", "libx264",
@@ -152,7 +57,7 @@ public class VideoService {
                     "-strict", "experimental",
                     outputPath
             );
-*/
+
             pb.redirectErrorStream(true); // Redireciona o erro padrão para a saída padrão
             Process process = pb.start();
 
